@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <string.h>
+#include <arpa/inet.h>
 
 /*
 struct sockaddr_in
@@ -24,10 +25,10 @@ int main(int argc, char ** argv) {
 
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_port = htons(55554);
-	inet_aton("localhost", &serverAddress.sin_addr.s_addr);
+	inet_pton(AF_INET, "localhost", &serverAddress.sin_addr.s_addr);
 
 	int fd = socket(AF_INET, SOCK_DGRAM, 0);
-	printf("%d\n", fd);
+	printf("File descriptor: %d\n", fd);
 	
 	if (fd < 0) {
 		printf("%s\n", "Error creating socket!");
@@ -35,6 +36,6 @@ int main(int argc, char ** argv) {
 
 	int ret = bind(fd, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
 
-	printf("%d\n", ret);
+	printf("Bind return value: %d\n", ret);
 
 }
