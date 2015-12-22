@@ -3,7 +3,6 @@
 // #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <sys/socket.h>
 #include <string.h>
 #include <arpa/inet.h>
 
@@ -26,6 +25,9 @@ int main(int argc, char ** argv) {
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_port = htons(55554);
 	inet_pton(AF_INET, "localhost", &serverAddress.sin_addr.s_addr);
+	// serverAddress.sin_addr.s_addr = INADDR_ANY;
+
+	printf("Inaddr any: %d\n", INADDR_ANY); // = 0
 
 	int fd = socket(AF_INET, SOCK_DGRAM, 0);
 	printf("File descriptor: %d\n", fd);
@@ -37,5 +39,20 @@ int main(int argc, char ** argv) {
 	int ret = bind(fd, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
 
 	printf("Bind return value: %d\n", ret);
+
+	printf("%hhx\n", ((char *)&serverAddress.sin_addr.s_addr)[0]);
+	printf("%hhx\n", ((char *)&serverAddress.sin_addr.s_addr)[1]);
+	printf("%hhx\n", ((char *)&serverAddress.sin_addr.s_addr)[2]);
+	printf("%hhx\n", ((char *)&serverAddress.sin_addr.s_addr)[3]);
+
+	// printf("%p\n", &(((char *)&serverAddress.sin_addr.s_addr)[0]));
+	// printf("%p\n", &(((char *)&serverAddress.sin_addr.s_addr)[1]));
+	// printf("%p\n", &(((char *)&serverAddress.sin_addr.s_addr)[2]));
+	// printf("%p\n", &(((char *)&serverAddress.sin_addr.s_addr)[3]));
+
+	printf("%lu\n", sizeof(serverAddress.sin_addr.s_addr));
+
+	ret = sendto(fd, "hi", 2, 0, 0, 0);
+	printf("Send return val: %d\n", ret);
 
 }
