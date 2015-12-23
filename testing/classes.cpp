@@ -31,9 +31,15 @@ Rectangle::Rectangle() : iceJJ(10, 100) {
 void Rectangle::print_me() {
 	cout << "hello" << width << height<<endl;
 }
+#include <bitset>  // for pretty printing odd-sized bit fields
+
 int main() {
-	Rectangle r;
-	r.iceJJ.print_me();
-	cout << "helo|" << endl;
+	// Rectangle r;
+	// r.iceJJ.print_me();
+	// cout << "helo|" << endl;
+	// return 0;
+
+
+	cout << hex << "0x" << bitset<64>().to_ulong() << endl;  // TODO convert this to something usuable
 	return 0;
 }

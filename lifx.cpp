@@ -52,7 +52,7 @@ protected:
 	/* variable length payload follows */
 public:
 	Header();
-	static Header deserialize(int);
+	static Header * deserialize(int);
 	void printEverything();
 };
 
@@ -113,7 +113,7 @@ Header::Header() {
 * If the message type is unknown (or payload is empty), returns a regular Header.
 * TODO socket will be non-blocking, so if there is no data, then "type" will be 0.
 */
-Header Header::deserialize(int sockfd) {
+Header * Header::deserialize(int sockfd) {
 	
 	// set up data structures
 	char buffer[100];
@@ -160,9 +160,9 @@ Header Header::deserialize(int sockfd) {
 	h.printEverything();
 
 
-	Color obj(1,2,3,4,5);
+	Color * obj = new Color(1,2,3,4,5);
 	printf("Returning size: %lu\n", sizeof(obj));  // TODO this is inconsistent, relearn the virtual keyword
-	return h;
+	return obj;
 }
 
 
@@ -194,7 +194,13 @@ void Header::printEverything() {
 	cout << fcol << "origin" << tab << bitset<2>(origin) << endl;
 	cout << fcol << "source" << tab << source << endl;
 	cout << "~~~~~ Frame Address ~~~~~" << endl;
-	cout << fcol << "target" << hex << tab << "0x" << bitset<64>(target).to_ulong() << endl;  // TODO convert this to something usuable
+	cout << fcol << "target" << tab << "0x" << flush;
+	char buf[8];
+	memcpy(buf, &target, 8);
+	for (int i = 0; i < 8; i++) {
+		printf("%2hhx", buf[i]);
+	}
+	printf("\n");
 	cout << fcol << "reserved" << tab << "6 bytes" << endl;
 	cout << fcol << "res_required" << tab << bitset<1>(res_required) << endl;
 	cout << fcol << "ack_required" << tab << bitset<1>(ack_required) << endl;
@@ -293,8 +299,8 @@ int main(int argc, char ** argv) {
 
 	MySocket sock;
 
-	Header thing = Header::deserialize(sock.getSocket());
-	printf("Returned object size: %lu\n", sizeof(thing));
+	Header * thing = Header::deserialize(sock.getSocket());
+	printf("Returned object size: %lu\n", sizeof(*thing));
 
 	return 0;
 
