@@ -33,12 +33,27 @@ void Rectangle::print_me() {
 }
 #include <bitset>  // for pretty printing odd-sized bit fields
 
+
+
+class Test {
+public:
+	int hello;
+	Test();
+};
+Test::Test() {
+	hello = 11;
+}
+
+
+#include <cstdio>
 int main() {
 	// Rectangle r;
 	// r.iceJJ.print_me();
 	// cout << "helo|" << endl;
 	// return 0;
-
+	Test t;
+	printf("%d\n", t.hello);
+	return 0;
 
 	cout << hex << "0x" << bitset<64>().to_ulong() << endl;  // TODO convert this to something usuable
 	return 0;
