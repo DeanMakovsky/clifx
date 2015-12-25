@@ -79,7 +79,7 @@ Header Header::deserialize(int sockfd) {
 	if (ret == -1) {
 		int val = errno;
 		if (val == EAGAIN || val == EWOULDBLOCK) {
-			printf("No data to read.\n");
+			// printf("No data to read.\n");
 			Header h;
 			h.head.type = 0;
 			return h;
@@ -180,15 +180,6 @@ Color::Color(unsigned int _hue, unsigned int _sat, unsigned int _bright, unsigne
 	payload.duration = _duration;
 
 	head.type = 102; // color message
-
-}
-
-void Color::print() {
-	// TODO look up this stuff for printf
-	printf("structure size : %zu bytes\n",sizeof(*this));
-	for(int i = 0; i < sizeof(*this) ; i++) {
-		// printf("%02x ",this[i]);
-	}
 
 }
 

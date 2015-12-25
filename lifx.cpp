@@ -20,6 +20,7 @@ Things to do:
 * implement more messages
 * return correct messages from desearialize()
 * target individual bulbs
+* check that the Get/Set/State power Light messages are the same content as the Device messages
 
 Considerations:
 * Make MySocket non-blocking optionally, my passing in a bool.
@@ -76,7 +77,8 @@ int main(int argc, char ** argv) {
 	// test non-blocking sockets
 	int messagesRead = 0;
 	for ( ;; ) {
-		while (true) {
+
+		while (true) { // while there are messages left, read them
 			Header thing = Header::deserialize(sock.getSocket());
 			if (thing.getType() != 0) {
 				messagesRead += 1;
@@ -86,9 +88,9 @@ int main(int argc, char ** argv) {
 				break;
 			}
 		}
-		printf("->Start to sleep.\n");
+		// printf("->Start to sleep.\n");
 		this_thread::sleep_for (chrono::seconds(1));
-		printf("<-End sleep.\n");
+		// printf("<-End sleep.\n");
 	}
 	return 0;
 
