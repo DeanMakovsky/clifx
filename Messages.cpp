@@ -53,12 +53,16 @@ Header::Header(char * buffer) {
 	memcpy(&head, buffer, sizeof(head) );
 }
 
+int Header::getType() {
+	return head.type;
+}
+
 /**
 * Reads from a socket the appropriate number of bytes and puts it into a new object.
 * If the message type is unknown (or payload is empty), returns a regular Header.
 * TODO socket will be non-blocking, so if there is no data, then "type" will be 0.
 */
-Header * Header::deserialize(int sockfd) {
+Header Header::deserialize(int sockfd) {
 	
 	// set up data structures
 	char buffer[100];
@@ -74,6 +78,12 @@ Header * Header::deserialize(int sockfd) {
 		(sockaddr *) &sender, &senderSize);
 	if (ret == -1) {
 		int val = errno;
+		if (val == EAGAIN || val == EWOULDBLOCK) {
+			printf("No data to read.\n");
+			Header h;
+			h.head.type = 0;
+			return h;
+		}
 		printf("Error reading from socket: %d, %s\n", val, strerror(val) );
 	}
 
@@ -116,9 +126,7 @@ Header * Header::deserialize(int sockfd) {
 
 
 
-	Color * obj = new Color(1,2,3,4,5);
-	printf("Returning size: %lu\n", sizeof(obj));
-	return obj;
+	return h;
 }
 
 MessageBuffer * Header::makeBuffer() {

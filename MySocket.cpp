@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#include <fcntl.h>
 #include <errno.h>
 #include <cstring>
 #include <cstdio>
@@ -21,17 +22,17 @@ struct sockaddr_in makeBCastDest() {
 }
 
 MySocket::MySocket() {
+
+	// make data structures
 	struct sockaddr_in serverAddress;
 	memset(&serverAddress,0,sizeof(serverAddress));
-
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_port = htons(56700);
 	// inet_pton(AF_INET, "localhost", &serverAddress.sin_addr.s_addr);
 	serverAddress.sin_addr.s_addr = INADDR_ANY;
 
+	// create socket
 	fd = socket(AF_INET, SOCK_DGRAM, 0);
-	// check for correctness
-	// printf("File descriptor: %d\n", fd);
 	if (fd == -1) {
 		int val = errno;
 		printf("Error creating socket: %d, %s\n", val, strerror(val) );
@@ -40,21 +41,27 @@ MySocket::MySocket() {
 	// allow UDP broadcast
 	int broadcastEnable=1;
 	int ret = setsockopt(fd, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable));
-	// printf("Socket options return value: %d\n", ret);
 	if (ret == -1) {
 		int val = errno;
 		printf("Error setting socket options: %d, %s\n", val, strerror(val) );
 	}
 
-
+	// bind socket
 	ret = bind(fd, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
-	// printf("Bind return value: %d\n", ret);
 	if (ret == -1) {
 		int val = errno;
 		printf("Error binding socket: %d, %s\n", val, strerror(val) );
 	}
-	
+
+	// make non-blocking
+	ret = fcntl( fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK );
+	if( ret < 0) {
+		int val = errno;
+	    printf("Error setting non-blocking mode: %d, %s\n", val, strerror(val));
+	}
+
 }
+
 void MySocket::send(void * start, int len) {
 	struct sockaddr_in destination = makeBCastDest();
 

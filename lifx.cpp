@@ -7,13 +7,33 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#include <fcntl.h>
+
 #include "Messages.h"
 #include "MySocket.h"
 
 using namespace std;
 
+/*
 
+Things to do:
+* implement more messages
+* return correct messages from desearialize()
+* target individual bulbs
 
+Considerations:
+* Make MySocket non-blocking optionally, my passing in a bool.
+
+*/
+
+void checkBlocking(int sockfd) {
+	if(fcntl(sockfd, F_GETFL) & O_NONBLOCK) {
+    	// socket is non-blocking
+    	printf("Socket non-blocking.\n");
+	} else {
+		printf("Socket is blocking.\n");
+	}
+}
 
 int randy(int min, int max) {
 	int ret = rand();
@@ -36,6 +56,40 @@ int main(int argc, char ** argv) {
 	// printf("Returned object size: %lu\n", sizeof(*thing));
 	// thing->printEverything();
 
+
+	// get socket options
+	int sockfd = sock.getSocket();
+	checkBlocking(sockfd);
+
+	// printf("O_RDWR: %d\n", O_RDWR);
+	// printf("Socket has: %d\n", fcntl(sockfd, F_GETFL));
+
+	// Put the socket in non-blocking mode:
+	if(fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFL) | O_NONBLOCK) < 0) {
+	    printf("Error putting socket in non-blocking mode.\n");
+	}
+
+	printf("~~Socket options changed~~\n");
+	checkBlocking(sockfd);
+
+
+	// test non-blocking sockets
+	int messagesRead = 0;
+	for ( ;; ) {
+		while (true) {
+			Header thing = Header::deserialize(sock.getSocket());
+			if (thing.getType() != 0) {
+				messagesRead += 1;
+				printf("Messages Read: %d\n", messagesRead);
+				thing.printEverything();
+			} else {
+				break;
+			}
+		}
+		printf("->Start to sleep.\n");
+		this_thread::sleep_for (chrono::seconds(1));
+		printf("<-End sleep.\n");
+	}
 	return 0;
 
 

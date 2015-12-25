@@ -39,7 +39,8 @@ protected:
 public:
 	Header();
 	Header(char *);
-	static Header * deserialize(int);
+	int getType();
+	static Header deserialize(int);
 	virtual MessageBuffer * makeBuffer();
 	virtual void printEverything();
 };
