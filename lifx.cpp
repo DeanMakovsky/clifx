@@ -18,7 +18,7 @@ using namespace std;
 
 Things to do:
 * implement more messages
-* return correct messages from desearialize()
+* return correct messages from deserialize()
 * target individual bulbs
 * check that the Get/Set/State power Light messages are the same content as the Device messages
 
@@ -97,7 +97,7 @@ int main(int argc, char ** argv) {
 
 	// make random colors!
 	for ( ;; ) {
-		Color c(randy(0,65535),65535,4*4096,randy(2500,9000),10);
+		SetColor c(randy(0,65535),65535,4*4096,randy(2500,9000),10);
 		MessageBuffer * b = c.makeBuffer();
 		sock.send(b->buf, b->size);
 		delete b;
