@@ -55,7 +55,7 @@ def listPayloadMessages():
 def mapMe():
 	"""For help generating the map of int->constructor"""
 	for m in messages:
-		print 'typeToCon[%s] = (Header(*)(char *)) %s;' % (str(m[2]), m[0]+"Fac")
+		print 'typeToCon[%s] = (Header *(*)(char *)) %s;' % (str(m[2]), m[0]+"Fac")
 
 # mapMe()
 # import sys

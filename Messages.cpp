@@ -100,6 +100,9 @@ Header::Header(char * buffer) {
 	memcpy(&head, buffer, sizeof(head) );
 }
 
+Header::~Header() {
+}
+
 int Header::getType() {
 	return head.type;
 }

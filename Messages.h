@@ -43,6 +43,7 @@ protected:
 public:
 	Header();
 	Header(char *);
+	virtual ~Header();
 	int getType();
 	static Header * deserialize(int);
 	virtual MessageBuffer * makeBuffer();

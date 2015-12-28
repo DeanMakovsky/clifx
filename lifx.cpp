@@ -70,8 +70,10 @@ int main(int argc, char ** argv) {
 				printf("Messages Read: %d\n", messagesRead);
 				thing->printEverything();
 			} else {
+				delete thing;
 				break;
 			}
+			delete thing;
 		}
 		// printf("->Start to sleep.\n");
 		this_thread::sleep_for (chrono::seconds(1));
