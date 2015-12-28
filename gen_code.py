@@ -52,6 +52,14 @@ def listPayloadMessages():
 	import sys
 	sys.exit(0)
 
+def mapMe():
+	"""For help generating the map of int->constructor"""
+	for m in messages:
+		print 'typeToCon[%s] = (Header(*)(char *)) %s;' % (str(m[2]), m[0]+"Fac")
+
+# mapMe()
+# import sys
+# sys.exit(0)
 
 bits_to_name = {
 	8:  'uint8_t ',
@@ -203,8 +211,8 @@ with open("Messages.h", "w") as headfile:
 				headfile.write( "\t%s(char *);\n" % className )
 			# 
 
-			headfile.write( "};\n\n\n" )
-			
+			headfile.write( "};\n\n" )
+			headfile.write( "%s %sFac(char *);\n\n\n" % (className, className))
 
 
 			# now do code (.cpp) file
@@ -250,7 +258,7 @@ with open("Messages.h", "w") as headfile:
 						bodyfile.write("\tcout << fcol << \"%s\" << tab << payload.%s << endl;\n" % (a_var[1], a_var[1]) )
 					else:
 						bodyfile.write("\tcout << fcol << \"%s\" << tab << \"%s bits\" << endl;\n" % (a_var[1], str(a_var[0])) )
-				bodyfile.write("}\n\n\n")
+				bodyfile.write("}\n\n")
 
 			else:  # no payload
 				# default constructor
@@ -259,5 +267,9 @@ with open("Messages.h", "w") as headfile:
 				bodyfile.write("}\n\n")
 				# deserialize
 				bodyfile.write("%s::%s(char * buf) : Header(buf) {\n" % (className, className) )
-				bodyfile.write("}\n\n\n")
+				bodyfile.write("}\n\n")
+			# factory function
+			bodyfile.write( "%s %sFac(char * buf){\n" % (className, className))
+			bodyfile.write( "\treturn %s(buf);\n" % className)
+			bodyfile.write( "}\n\n\n")
 		addThisToThat("static_files/head_end.h", headfile)

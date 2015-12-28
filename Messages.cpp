@@ -4,6 +4,7 @@
 #include <string>
 #include <iomanip> // for cout columns
 #include <bitset>  // for pretty printing odd-sized bit fields
+#include <map>
 
 #include <cstring>
 #include <cstdio>
@@ -19,6 +20,47 @@
 #define tab setw(10)
 
 using namespace std;
+
+
+map<int, Header(*)(char *)> mapMaker() {
+	map<int, Header(*)(char *)> typeToCon;
+	typeToCon[2] = (Header(*)(char *)) GetServiceFac;
+	typeToCon[3] = (Header(*)(char *)) StateServiceFac;
+	typeToCon[2] = (Header(*)(char *)) GetHostInfoFac;
+	typeToCon[3] = (Header(*)(char *)) StateHostInfoFac;
+	typeToCon[4] = (Header(*)(char *)) GetHostFirmwareFac;
+	typeToCon[5] = (Header(*)(char *)) StateHostFirmwareFac;
+	typeToCon[16] = (Header(*)(char *)) GetWifiInfoFac;
+	typeToCon[17] = (Header(*)(char *)) StateWifiInfoFac;
+	typeToCon[18] = (Header(*)(char *)) GetWifiFirmwareFac;
+	typeToCon[19] = (Header(*)(char *)) StateWifiFirmwareFac;
+	typeToCon[20] = (Header(*)(char *)) GetPowerFac;
+	typeToCon[21] = (Header(*)(char *)) SetPowerFac;
+	typeToCon[22] = (Header(*)(char *)) StatePowerFac;
+	typeToCon[23] = (Header(*)(char *)) GetLabelFac;
+	typeToCon[24] = (Header(*)(char *)) SetLabelFac;
+	typeToCon[25] = (Header(*)(char *)) StateLabelFac;
+	typeToCon[32] = (Header(*)(char *)) GetVersionFac;
+	typeToCon[33] = (Header(*)(char *)) StateVersionFac;
+	typeToCon[34] = (Header(*)(char *)) GetInfoFac;
+	typeToCon[35] = (Header(*)(char *)) StateInfoFac;
+	typeToCon[45] = (Header(*)(char *)) AcknowledgementFac;
+	typeToCon[48] = (Header(*)(char *)) GetLocationFac;
+	typeToCon[50] = (Header(*)(char *)) StateLocationFac;
+	typeToCon[51] = (Header(*)(char *)) GetGroupFac;
+	typeToCon[53] = (Header(*)(char *)) StateGroupFac;
+	typeToCon[58] = (Header(*)(char *)) EchoRequestFac;
+	typeToCon[59] = (Header(*)(char *)) EchoResponseFac;
+	typeToCon[101] = (Header(*)(char *)) GetFac;
+	typeToCon[102] = (Header(*)(char *)) SetColorFac;
+	typeToCon[107] = (Header(*)(char *)) StateFac;
+	typeToCon[116] = (Header(*)(char *)) GetPower_LightFac;
+	typeToCon[117] = (Header(*)(char *)) SetPower_LightFac;
+	typeToCon[118] = (Header(*)(char *)) StatePower_LightFac;
+	return typeToCon;
+}
+
+map<int, Header(*)(char *)> typeToCon = mapMaker();
 
 
 MessageBuffer::MessageBuffer(char * _buf, int _size) {
@@ -84,7 +126,7 @@ Header Header::deserialize(int sockfd) {
 	if (ret == -1) {
 		int val = errno;
 		if (val == EAGAIN || val == EWOULDBLOCK) {
-			// printf("No data to read.\n");
+			printf("No data to read.\n");
 			Header h;
 			h.head.type = 0;
 			return h;
@@ -124,12 +166,13 @@ Header Header::deserialize(int sockfd) {
 	// h.printEverything();
 
 
+	map<int, Header(*)(char *)>::iterator it = typeToCon.find(h.head.type);
+	if (it == typeToCon.end()) {
+		printf("No constructor found for message type: %d\n", h.head.type);
+		return h;
+	}
 
-
-	// TODO make a map of message types to classes and instantiate the proper class right here.
-
-
-
+	h = (it->second)(buffer);
 
 	return h;
 }
@@ -256,6 +299,10 @@ void StateWifiInfo::printEverything() {
 GetService::GetService(char * buf) : Header(buf) {
 }
 
+GetService GetServiceFac(char * buf){
+	return GetService(buf);
+}
+
 
 StateService::StateService(uint8_t _service, uint32_t _port) {
 	head.type = 3;
@@ -285,12 +332,20 @@ void StateService::printEverything() {
 	cout << fcol << "port" << tab << payload.port << endl;
 }
 
+StateService StateServiceFac(char * buf){
+	return StateService(buf);
+}
+
 
 GetHostInfo::GetHostInfo() {
 	head.type = 2;
 }
 
 GetHostInfo::GetHostInfo(char * buf) : Header(buf) {
+}
+
+GetHostInfo GetHostInfoFac(char * buf){
+	return GetHostInfo(buf);
 }
 
 
@@ -325,12 +380,20 @@ void StateHostInfo::printEverything() {
 	cout << fcol << "reserved" << tab << "16+ bits" << endl;
 }
 
+StateHostInfo StateHostInfoFac(char * buf){
+	return StateHostInfo(buf);
+}
+
 
 GetHostFirmware::GetHostFirmware() {
 	head.type = 4;
 }
 
 GetHostFirmware::GetHostFirmware(char * buf) : Header(buf) {
+}
+
+GetHostFirmware GetHostFirmwareFac(char * buf){
+	return GetHostFirmware(buf);
 }
 
 
@@ -363,12 +426,20 @@ void StateHostFirmware::printEverything() {
 	cout << fcol << "version" << tab << payload.version << endl;
 }
 
+StateHostFirmware StateHostFirmwareFac(char * buf){
+	return StateHostFirmware(buf);
+}
+
 
 GetWifiInfo::GetWifiInfo() {
 	head.type = 16;
 }
 
 GetWifiInfo::GetWifiInfo(char * buf) : Header(buf) {
+}
+
+GetWifiInfo GetWifiInfoFac(char * buf){
+	return GetWifiInfo(buf);
 }
 
 
@@ -403,12 +474,20 @@ void StateWifiInfo::printEverything() {
 	cout << fcol << "reserved" << tab << "16+ bits" << endl;
 }
 
+StateWifiInfo StateWifiInfoFac(char * buf){
+	return StateWifiInfo(buf);
+}
+
 
 GetWifiFirmware::GetWifiFirmware() {
 	head.type = 18;
 }
 
 GetWifiFirmware::GetWifiFirmware(char * buf) : Header(buf) {
+}
+
+GetWifiFirmware GetWifiFirmwareFac(char * buf){
+	return GetWifiFirmware(buf);
 }
 
 
@@ -441,12 +520,20 @@ void StateWifiFirmware::printEverything() {
 	cout << fcol << "version" << tab << payload.version << endl;
 }
 
+StateWifiFirmware StateWifiFirmwareFac(char * buf){
+	return StateWifiFirmware(buf);
+}
+
 
 GetPower::GetPower() {
 	head.type = 20;
 }
 
 GetPower::GetPower(char * buf) : Header(buf) {
+}
+
+GetPower GetPowerFac(char * buf){
+	return GetPower(buf);
 }
 
 
@@ -476,6 +563,10 @@ void SetPower::printEverything() {
 	cout << fcol << "level" << tab << payload.level << endl;
 }
 
+SetPower SetPowerFac(char * buf){
+	return SetPower(buf);
+}
+
 
 StatePower::StatePower(uint16_t _level) {
 	head.type = 22;
@@ -503,12 +594,20 @@ void StatePower::printEverything() {
 	cout << fcol << "level" << tab << payload.level << endl;
 }
 
+StatePower StatePowerFac(char * buf){
+	return StatePower(buf);
+}
+
 
 GetLabel::GetLabel() {
 	head.type = 23;
 }
 
 GetLabel::GetLabel(char * buf) : Header(buf) {
+}
+
+GetLabel GetLabelFac(char * buf){
+	return GetLabel(buf);
 }
 
 
@@ -538,6 +637,10 @@ void SetLabel::printEverything() {
 	cout << fcol << "payload[32]" << tab << payload.payload[32] << endl;
 }
 
+SetLabel SetLabelFac(char * buf){
+	return SetLabel(buf);
+}
+
 
 StateLabel::StateLabel(string _payload) {
 	head.type = 25;
@@ -565,12 +668,20 @@ void StateLabel::printEverything() {
 	cout << fcol << "payload[32]" << tab << payload.payload[32] << endl;
 }
 
+StateLabel StateLabelFac(char * buf){
+	return StateLabel(buf);
+}
+
 
 GetVersion::GetVersion() {
 	head.type = 32;
 }
 
 GetVersion::GetVersion(char * buf) : Header(buf) {
+}
+
+GetVersion GetVersionFac(char * buf){
+	return GetVersion(buf);
 }
 
 
@@ -604,12 +715,20 @@ void StateVersion::printEverything() {
 	cout << fcol << "version" << tab << payload.version << endl;
 }
 
+StateVersion StateVersionFac(char * buf){
+	return StateVersion(buf);
+}
+
 
 GetInfo::GetInfo() {
 	head.type = 34;
 }
 
 GetInfo::GetInfo(char * buf) : Header(buf) {
+}
+
+GetInfo GetInfoFac(char * buf){
+	return GetInfo(buf);
 }
 
 
@@ -643,6 +762,10 @@ void StateInfo::printEverything() {
 	cout << fcol << "downtime" << tab << payload.downtime << endl;
 }
 
+StateInfo StateInfoFac(char * buf){
+	return StateInfo(buf);
+}
+
 
 Acknowledgement::Acknowledgement() {
 	head.type = 45;
@@ -651,12 +774,20 @@ Acknowledgement::Acknowledgement() {
 Acknowledgement::Acknowledgement(char * buf) : Header(buf) {
 }
 
+Acknowledgement AcknowledgementFac(char * buf){
+	return Acknowledgement(buf);
+}
+
 
 GetLocation::GetLocation() {
 	head.type = 48;
 }
 
 GetLocation::GetLocation(char * buf) : Header(buf) {
+}
+
+GetLocation GetLocationFac(char * buf){
+	return GetLocation(buf);
 }
 
 
@@ -690,12 +821,20 @@ void StateLocation::printEverything() {
 	cout << fcol << "updated_at" << tab << payload.updated_at << endl;
 }
 
+StateLocation StateLocationFac(char * buf){
+	return StateLocation(buf);
+}
+
 
 GetGroup::GetGroup() {
 	head.type = 51;
 }
 
 GetGroup::GetGroup(char * buf) : Header(buf) {
+}
+
+GetGroup GetGroupFac(char * buf){
+	return GetGroup(buf);
 }
 
 
@@ -729,6 +868,10 @@ void StateGroup::printEverything() {
 	cout << fcol << "updated_at" << tab << payload.updated_at << endl;
 }
 
+StateGroup StateGroupFac(char * buf){
+	return StateGroup(buf);
+}
+
 
 EchoRequest::EchoRequest(string _payload) {
 	head.type = 58;
@@ -754,6 +897,10 @@ void EchoRequest::printEverything() {
 	Header::printEverything();
 	cout << "~~~~~~ Payload ~~~~~~" << endl;
 	cout << fcol << "payload[64]" << tab << payload.payload[64] << endl;
+}
+
+EchoRequest EchoRequestFac(char * buf){
+	return EchoRequest(buf);
 }
 
 
@@ -783,12 +930,20 @@ void EchoResponse::printEverything() {
 	cout << fcol << "payload[64]" << tab << payload.payload[64] << endl;
 }
 
+EchoResponse EchoResponseFac(char * buf){
+	return EchoResponse(buf);
+}
+
 
 Get::Get() {
 	head.type = 101;
 }
 
 Get::Get(char * buf) : Header(buf) {
+}
+
+Get GetFac(char * buf){
+	return Get(buf);
 }
 
 
@@ -825,6 +980,10 @@ void SetColor::printEverything() {
 	cout << fcol << "brightness" << tab << payload.brightness << endl;
 	cout << fcol << "kelvin" << tab << payload.kelvin << endl;
 	cout << fcol << "duration" << tab << payload.duration << endl;
+}
+
+SetColor SetColorFac(char * buf){
+	return SetColor(buf);
 }
 
 
@@ -866,12 +1025,20 @@ void State::printEverything() {
 	cout << fcol << "reserved" << tab << "64 bits" << endl;
 }
 
+State StateFac(char * buf){
+	return State(buf);
+}
+
 
 GetPower_Light::GetPower_Light() {
 	head.type = 116;
 }
 
 GetPower_Light::GetPower_Light(char * buf) : Header(buf) {
+}
+
+GetPower_Light GetPower_LightFac(char * buf){
+	return GetPower_Light(buf);
 }
 
 
@@ -903,6 +1070,10 @@ void SetPower_Light::printEverything() {
 	cout << fcol << "duration" << tab << payload.duration << endl;
 }
 
+SetPower_Light SetPower_LightFac(char * buf){
+	return SetPower_Light(buf);
+}
+
 
 StatePower_Light::StatePower_Light(uint16_t _level) {
 	head.type = 118;
@@ -928,6 +1099,10 @@ void StatePower_Light::printEverything() {
 	Header::printEverything();
 	cout << "~~~~~~ Payload ~~~~~~" << endl;
 	cout << fcol << "level" << tab << payload.level << endl;
+}
+
+StatePower_Light StatePower_LightFac(char * buf){
+	return StatePower_Light(buf);
 }
 
 

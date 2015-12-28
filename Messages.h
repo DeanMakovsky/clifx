@@ -56,6 +56,8 @@ public:
 	GetService(char *);
 };
 
+GetService GetServiceFac(char *);
+
 
 class StateService: public Header {
 	struct {
@@ -69,12 +71,16 @@ public:
 	void printEverything();
 };
 
+StateService StateServiceFac(char *);
+
 
 class GetHostInfo: public Header {
 public:
 	GetHostInfo();
 	GetHostInfo(char *);
 };
+
+GetHostInfo GetHostInfoFac(char *);
 
 
 class StateHostInfo: public Header {
@@ -91,12 +97,16 @@ public:
 	void printEverything();
 };
 
+StateHostInfo StateHostInfoFac(char *);
+
 
 class GetHostFirmware: public Header {
 public:
 	GetHostFirmware();
 	GetHostFirmware(char *);
 };
+
+GetHostFirmware GetHostFirmwareFac(char *);
 
 
 class StateHostFirmware: public Header {
@@ -112,12 +122,16 @@ public:
 	void printEverything();
 };
 
+StateHostFirmware StateHostFirmwareFac(char *);
+
 
 class GetWifiInfo: public Header {
 public:
 	GetWifiInfo();
 	GetWifiInfo(char *);
 };
+
+GetWifiInfo GetWifiInfoFac(char *);
 
 
 class StateWifiInfo: public Header {
@@ -134,12 +148,16 @@ public:
 	void printEverything();
 };
 
+StateWifiInfo StateWifiInfoFac(char *);
+
 
 class GetWifiFirmware: public Header {
 public:
 	GetWifiFirmware();
 	GetWifiFirmware(char *);
 };
+
+GetWifiFirmware GetWifiFirmwareFac(char *);
 
 
 class StateWifiFirmware: public Header {
@@ -155,12 +173,16 @@ public:
 	void printEverything();
 };
 
+StateWifiFirmware StateWifiFirmwareFac(char *);
+
 
 class GetPower: public Header {
 public:
 	GetPower();
 	GetPower(char *);
 };
+
+GetPower GetPowerFac(char *);
 
 
 class SetPower: public Header {
@@ -174,6 +196,8 @@ public:
 	void printEverything();
 };
 
+SetPower SetPowerFac(char *);
+
 
 class StatePower: public Header {
 	struct {
@@ -186,12 +210,16 @@ public:
 	void printEverything();
 };
 
+StatePower StatePowerFac(char *);
+
 
 class GetLabel: public Header {
 public:
 	GetLabel();
 	GetLabel(char *);
 };
+
+GetLabel GetLabelFac(char *);
 
 
 class SetLabel: public Header {
@@ -205,6 +233,8 @@ public:
 	void printEverything();
 };
 
+SetLabel SetLabelFac(char *);
+
 
 class StateLabel: public Header {
 	struct {
@@ -217,12 +247,16 @@ public:
 	void printEverything();
 };
 
+StateLabel StateLabelFac(char *);
+
 
 class GetVersion: public Header {
 public:
 	GetVersion();
 	GetVersion(char *);
 };
+
+GetVersion GetVersionFac(char *);
 
 
 class StateVersion: public Header {
@@ -238,12 +272,16 @@ public:
 	void printEverything();
 };
 
+StateVersion StateVersionFac(char *);
+
 
 class GetInfo: public Header {
 public:
 	GetInfo();
 	GetInfo(char *);
 };
+
+GetInfo GetInfoFac(char *);
 
 
 class StateInfo: public Header {
@@ -259,6 +297,8 @@ public:
 	void printEverything();
 };
 
+StateInfo StateInfoFac(char *);
+
 
 class Acknowledgement: public Header {
 public:
@@ -266,12 +306,16 @@ public:
 	Acknowledgement(char *);
 };
 
+Acknowledgement AcknowledgementFac(char *);
+
 
 class GetLocation: public Header {
 public:
 	GetLocation();
 	GetLocation(char *);
 };
+
+GetLocation GetLocationFac(char *);
 
 
 class StateLocation: public Header {
@@ -287,12 +331,16 @@ public:
 	void printEverything();
 };
 
+StateLocation StateLocationFac(char *);
+
 
 class GetGroup: public Header {
 public:
 	GetGroup();
 	GetGroup(char *);
 };
+
+GetGroup GetGroupFac(char *);
 
 
 class StateGroup: public Header {
@@ -308,6 +356,8 @@ public:
 	void printEverything();
 };
 
+StateGroup StateGroupFac(char *);
+
 
 class EchoRequest: public Header {
 	struct {
@@ -319,6 +369,8 @@ public:
 	MessageBuffer * makeBuffer();
 	void printEverything();
 };
+
+EchoRequest EchoRequestFac(char *);
 
 
 class EchoResponse: public Header {
@@ -332,12 +384,16 @@ public:
 	void printEverything();
 };
 
+EchoResponse EchoResponseFac(char *);
+
 
 class Get: public Header {
 public:
 	Get();
 	Get(char *);
 };
+
+Get GetFac(char *);
 
 
 class SetColor: public Header {
@@ -355,6 +411,8 @@ public:
 	MessageBuffer * makeBuffer();
 	void printEverything();
 };
+
+SetColor SetColorFac(char *);
 
 
 class State: public Header {
@@ -375,12 +433,16 @@ public:
 	void printEverything();
 };
 
+State StateFac(char *);
+
 
 class GetPower_Light: public Header {
 public:
 	GetPower_Light();
 	GetPower_Light(char *);
 };
+
+GetPower_Light GetPower_LightFac(char *);
 
 
 class SetPower_Light: public Header {
@@ -395,6 +457,8 @@ public:
 	void printEverything();
 };
 
+SetPower_Light SetPower_LightFac(char *);
+
 
 class StatePower_Light: public Header {
 	struct {
@@ -406,6 +470,8 @@ public:
 	MessageBuffer * makeBuffer();
 	void printEverything();
 };
+
+StatePower_Light StatePower_LightFac(char *);
 
 
 

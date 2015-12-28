@@ -2,6 +2,7 @@
 #include <string>
 #include <iomanip> // for cout columns
 #include <bitset>  // for pretty printing odd-sized bit fields
+#include <map>
 
 #include <cstring>
 #include <cstdio>
@@ -17,6 +18,47 @@
 #define tab setw(10)
 
 using namespace std;
+
+
+map<int, Header(*)(char *)> mapMaker() {
+	map<int, Header(*)(char *)> typeToCon;
+	typeToCon[2] = (Header(*)(char *)) GetServiceFac;
+	typeToCon[3] = (Header(*)(char *)) StateServiceFac;
+	typeToCon[2] = (Header(*)(char *)) GetHostInfoFac;
+	typeToCon[3] = (Header(*)(char *)) StateHostInfoFac;
+	typeToCon[4] = (Header(*)(char *)) GetHostFirmwareFac;
+	typeToCon[5] = (Header(*)(char *)) StateHostFirmwareFac;
+	typeToCon[16] = (Header(*)(char *)) GetWifiInfoFac;
+	typeToCon[17] = (Header(*)(char *)) StateWifiInfoFac;
+	typeToCon[18] = (Header(*)(char *)) GetWifiFirmwareFac;
+	typeToCon[19] = (Header(*)(char *)) StateWifiFirmwareFac;
+	typeToCon[20] = (Header(*)(char *)) GetPowerFac;
+	typeToCon[21] = (Header(*)(char *)) SetPowerFac;
+	typeToCon[22] = (Header(*)(char *)) StatePowerFac;
+	typeToCon[23] = (Header(*)(char *)) GetLabelFac;
+	typeToCon[24] = (Header(*)(char *)) SetLabelFac;
+	typeToCon[25] = (Header(*)(char *)) StateLabelFac;
+	typeToCon[32] = (Header(*)(char *)) GetVersionFac;
+	typeToCon[33] = (Header(*)(char *)) StateVersionFac;
+	typeToCon[34] = (Header(*)(char *)) GetInfoFac;
+	typeToCon[35] = (Header(*)(char *)) StateInfoFac;
+	typeToCon[45] = (Header(*)(char *)) AcknowledgementFac;
+	typeToCon[48] = (Header(*)(char *)) GetLocationFac;
+	typeToCon[50] = (Header(*)(char *)) StateLocationFac;
+	typeToCon[51] = (Header(*)(char *)) GetGroupFac;
+	typeToCon[53] = (Header(*)(char *)) StateGroupFac;
+	typeToCon[58] = (Header(*)(char *)) EchoRequestFac;
+	typeToCon[59] = (Header(*)(char *)) EchoResponseFac;
+	typeToCon[101] = (Header(*)(char *)) GetFac;
+	typeToCon[102] = (Header(*)(char *)) SetColorFac;
+	typeToCon[107] = (Header(*)(char *)) StateFac;
+	typeToCon[116] = (Header(*)(char *)) GetPower_LightFac;
+	typeToCon[117] = (Header(*)(char *)) SetPower_LightFac;
+	typeToCon[118] = (Header(*)(char *)) StatePower_LightFac;
+	return typeToCon;
+}
+
+map<int, Header(*)(char *)> typeToCon = mapMaker();
 
 
 MessageBuffer::MessageBuffer(char * _buf, int _size) {
@@ -82,7 +124,7 @@ Header Header::deserialize(int sockfd) {
 	if (ret == -1) {
 		int val = errno;
 		if (val == EAGAIN || val == EWOULDBLOCK) {
-			// printf("No data to read.\n");
+			printf("No data to read.\n");
 			Header h;
 			h.head.type = 0;
 			return h;
@@ -122,12 +164,13 @@ Header Header::deserialize(int sockfd) {
 	// h.printEverything();
 
 
+	map<int, Header(*)(char *)>::iterator it = typeToCon.find(h.head.type);
+	if (it == typeToCon.end()) {
+		printf("No constructor found for message type: %d\n", h.head.type);
+		return h;
+	}
 
-
-	// TODO make a map of message types to classes and instantiate the proper class right here.
-
-
-
+	h = (it->second)(buffer);
 
 	return h;
 }

@@ -60,26 +60,9 @@ int main(int argc, char ** argv) {
 	// thing->printEverything();
 
 
-	// get socket options
-	int sockfd = sock.getSocket();
-	checkBlocking(sockfd);
-
-	// printf("O_RDWR: %d\n", O_RDWR);
-	// printf("Socket has: %d\n", fcntl(sockfd, F_GETFL));
-
-	// Put the socket in non-blocking mode:
-	if(fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFL) | O_NONBLOCK) < 0) {
-	    printf("Error putting socket in non-blocking mode.\n");
-	}
-
-	printf("~~Socket options changed~~\n");
-	checkBlocking(sockfd);
-
-
 	// test non-blocking sockets
 	int messagesRead = 0;
 	for ( ;; ) {
-
 		while (true) { // while there are messages left, read them
 			Header thing = Header::deserialize(sock.getSocket());
 			if (thing.getType() != 0) {
