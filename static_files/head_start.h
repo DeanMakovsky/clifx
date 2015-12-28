@@ -42,7 +42,7 @@ public:
 	Header();
 	Header(char *);
 	int getType();
-	static Header deserialize(int);
+	static Header * deserialize(int);
 	virtual MessageBuffer * makeBuffer();
 	virtual void printEverything();
 };

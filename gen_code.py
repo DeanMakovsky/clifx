@@ -212,7 +212,7 @@ with open("Messages.h", "w") as headfile:
 			# 
 
 			headfile.write( "};\n\n" )
-			headfile.write( "%s %sFac(char *);\n\n\n" % (className, className))
+			headfile.write( "%s * %sFac(char *);\n\n\n" % (className, className))
 
 
 			# now do code (.cpp) file
@@ -269,7 +269,7 @@ with open("Messages.h", "w") as headfile:
 				bodyfile.write("%s::%s(char * buf) : Header(buf) {\n" % (className, className) )
 				bodyfile.write("}\n\n")
 			# factory function
-			bodyfile.write( "%s %sFac(char * buf){\n" % (className, className))
-			bodyfile.write( "\treturn %s(buf);\n" % className)
+			bodyfile.write( "%s * %sFac(char * buf){\n" % (className, className))
+			bodyfile.write( "\treturn new %s(buf);\n" % className)
 			bodyfile.write( "}\n\n\n")
 		addThisToThat("static_files/head_end.h", headfile)

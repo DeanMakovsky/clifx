@@ -44,7 +44,7 @@ public:
 	Header();
 	Header(char *);
 	int getType();
-	static Header deserialize(int);
+	static Header * deserialize(int);
 	virtual MessageBuffer * makeBuffer();
 	virtual void printEverything();
 };
@@ -56,7 +56,7 @@ public:
 	GetService(char *);
 };
 
-GetService GetServiceFac(char *);
+GetService * GetServiceFac(char *);
 
 
 class StateService: public Header {
@@ -71,7 +71,7 @@ public:
 	void printEverything();
 };
 
-StateService StateServiceFac(char *);
+StateService * StateServiceFac(char *);
 
 
 class GetHostInfo: public Header {
@@ -80,7 +80,7 @@ public:
 	GetHostInfo(char *);
 };
 
-GetHostInfo GetHostInfoFac(char *);
+GetHostInfo * GetHostInfoFac(char *);
 
 
 class StateHostInfo: public Header {
@@ -97,7 +97,7 @@ public:
 	void printEverything();
 };
 
-StateHostInfo StateHostInfoFac(char *);
+StateHostInfo * StateHostInfoFac(char *);
 
 
 class GetHostFirmware: public Header {
@@ -106,7 +106,7 @@ public:
 	GetHostFirmware(char *);
 };
 
-GetHostFirmware GetHostFirmwareFac(char *);
+GetHostFirmware * GetHostFirmwareFac(char *);
 
 
 class StateHostFirmware: public Header {
@@ -122,7 +122,7 @@ public:
 	void printEverything();
 };
 
-StateHostFirmware StateHostFirmwareFac(char *);
+StateHostFirmware * StateHostFirmwareFac(char *);
 
 
 class GetWifiInfo: public Header {
@@ -131,7 +131,7 @@ public:
 	GetWifiInfo(char *);
 };
 
-GetWifiInfo GetWifiInfoFac(char *);
+GetWifiInfo * GetWifiInfoFac(char *);
 
 
 class StateWifiInfo: public Header {
@@ -148,7 +148,7 @@ public:
 	void printEverything();
 };
 
-StateWifiInfo StateWifiInfoFac(char *);
+StateWifiInfo * StateWifiInfoFac(char *);
 
 
 class GetWifiFirmware: public Header {
@@ -157,7 +157,7 @@ public:
 	GetWifiFirmware(char *);
 };
 
-GetWifiFirmware GetWifiFirmwareFac(char *);
+GetWifiFirmware * GetWifiFirmwareFac(char *);
 
 
 class StateWifiFirmware: public Header {
@@ -173,7 +173,7 @@ public:
 	void printEverything();
 };
 
-StateWifiFirmware StateWifiFirmwareFac(char *);
+StateWifiFirmware * StateWifiFirmwareFac(char *);
 
 
 class GetPower: public Header {
@@ -182,7 +182,7 @@ public:
 	GetPower(char *);
 };
 
-GetPower GetPowerFac(char *);
+GetPower * GetPowerFac(char *);
 
 
 class SetPower: public Header {
@@ -196,7 +196,7 @@ public:
 	void printEverything();
 };
 
-SetPower SetPowerFac(char *);
+SetPower * SetPowerFac(char *);
 
 
 class StatePower: public Header {
@@ -210,7 +210,7 @@ public:
 	void printEverything();
 };
 
-StatePower StatePowerFac(char *);
+StatePower * StatePowerFac(char *);
 
 
 class GetLabel: public Header {
@@ -219,7 +219,7 @@ public:
 	GetLabel(char *);
 };
 
-GetLabel GetLabelFac(char *);
+GetLabel * GetLabelFac(char *);
 
 
 class SetLabel: public Header {
@@ -233,7 +233,7 @@ public:
 	void printEverything();
 };
 
-SetLabel SetLabelFac(char *);
+SetLabel * SetLabelFac(char *);
 
 
 class StateLabel: public Header {
@@ -247,7 +247,7 @@ public:
 	void printEverything();
 };
 
-StateLabel StateLabelFac(char *);
+StateLabel * StateLabelFac(char *);
 
 
 class GetVersion: public Header {
@@ -256,7 +256,7 @@ public:
 	GetVersion(char *);
 };
 
-GetVersion GetVersionFac(char *);
+GetVersion * GetVersionFac(char *);
 
 
 class StateVersion: public Header {
@@ -272,7 +272,7 @@ public:
 	void printEverything();
 };
 
-StateVersion StateVersionFac(char *);
+StateVersion * StateVersionFac(char *);
 
 
 class GetInfo: public Header {
@@ -281,7 +281,7 @@ public:
 	GetInfo(char *);
 };
 
-GetInfo GetInfoFac(char *);
+GetInfo * GetInfoFac(char *);
 
 
 class StateInfo: public Header {
@@ -297,7 +297,7 @@ public:
 	void printEverything();
 };
 
-StateInfo StateInfoFac(char *);
+StateInfo * StateInfoFac(char *);
 
 
 class Acknowledgement: public Header {
@@ -306,7 +306,7 @@ public:
 	Acknowledgement(char *);
 };
 
-Acknowledgement AcknowledgementFac(char *);
+Acknowledgement * AcknowledgementFac(char *);
 
 
 class GetLocation: public Header {
@@ -315,7 +315,7 @@ public:
 	GetLocation(char *);
 };
 
-GetLocation GetLocationFac(char *);
+GetLocation * GetLocationFac(char *);
 
 
 class StateLocation: public Header {
@@ -331,7 +331,7 @@ public:
 	void printEverything();
 };
 
-StateLocation StateLocationFac(char *);
+StateLocation * StateLocationFac(char *);
 
 
 class GetGroup: public Header {
@@ -340,7 +340,7 @@ public:
 	GetGroup(char *);
 };
 
-GetGroup GetGroupFac(char *);
+GetGroup * GetGroupFac(char *);
 
 
 class StateGroup: public Header {
@@ -356,7 +356,7 @@ public:
 	void printEverything();
 };
 
-StateGroup StateGroupFac(char *);
+StateGroup * StateGroupFac(char *);
 
 
 class EchoRequest: public Header {
@@ -370,7 +370,7 @@ public:
 	void printEverything();
 };
 
-EchoRequest EchoRequestFac(char *);
+EchoRequest * EchoRequestFac(char *);
 
 
 class EchoResponse: public Header {
@@ -384,7 +384,7 @@ public:
 	void printEverything();
 };
 
-EchoResponse EchoResponseFac(char *);
+EchoResponse * EchoResponseFac(char *);
 
 
 class Get: public Header {
@@ -393,7 +393,7 @@ public:
 	Get(char *);
 };
 
-Get GetFac(char *);
+Get * GetFac(char *);
 
 
 class SetColor: public Header {
@@ -412,7 +412,7 @@ public:
 	void printEverything();
 };
 
-SetColor SetColorFac(char *);
+SetColor * SetColorFac(char *);
 
 
 class State: public Header {
@@ -433,7 +433,7 @@ public:
 	void printEverything();
 };
 
-State StateFac(char *);
+State * StateFac(char *);
 
 
 class GetPower_Light: public Header {
@@ -442,7 +442,7 @@ public:
 	GetPower_Light(char *);
 };
 
-GetPower_Light GetPower_LightFac(char *);
+GetPower_Light * GetPower_LightFac(char *);
 
 
 class SetPower_Light: public Header {
@@ -457,7 +457,7 @@ public:
 	void printEverything();
 };
 
-SetPower_Light SetPower_LightFac(char *);
+SetPower_Light * SetPower_LightFac(char *);
 
 
 class StatePower_Light: public Header {
@@ -471,7 +471,7 @@ public:
 	void printEverything();
 };
 
-StatePower_Light StatePower_LightFac(char *);
+StatePower_Light * StatePower_LightFac(char *);
 
 
 

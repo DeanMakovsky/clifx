@@ -64,11 +64,11 @@ int main(int argc, char ** argv) {
 	int messagesRead = 0;
 	for ( ;; ) {
 		while (true) { // while there are messages left, read them
-			Header thing = Header::deserialize(sock.getSocket());
-			if (thing.getType() != 0) {
+			Header * thing = Header::deserialize(sock.getSocket());
+			if (thing->getType() != 0) {
 				messagesRead += 1;
 				printf("Messages Read: %d\n", messagesRead);
-				thing.printEverything();
+				thing->printEverything();
 			} else {
 				break;
 			}
