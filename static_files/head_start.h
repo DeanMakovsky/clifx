@@ -1,6 +1,8 @@
 #ifndef MESS_AGES
 #define MESS_AGES
 
+#include <string>
+using namespace std;
 
 class MessageBuffer {
 public:

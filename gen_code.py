@@ -122,12 +122,19 @@ def makeParams(className, insertUnderscoreNames=False):
 		return ""
 	
 	def operate(a_var):
+		"""Returns the type name (and optionally the variable name too) for the passed in tuple"""
 		temp = False
 		if a_var[1] != "reserved":
 			type_name = convertType(a_var[0]).strip()
+			if a_var[0] == "string":  # the only time we don't want this is in the payload struct
+				type_name = "string"
 			temp = type_name
 			if insertUnderscoreNames:
-				temp += " _" + a_var[1]
+				if a_var[0] == "string":
+					end = a_var[1].find('[')
+					temp += " _" + a_var[1][0:end]
+				else:
+					temp += " _" + a_var[1]
 		return temp
 
 	# get first word
@@ -176,23 +183,23 @@ with open("Messages.h", "w") as headfile:
 			headfile.write("class %s: public Header {\n" % className)
 			if message_spec[1]:  # has payload
 				headfile.write( "\tstruct {\n" )
-				for extra in variables[className]:
-					var_name = extra[1]
+				for a_var in variables[className]:
+					var_name = a_var[1]
 					# if not used, then make the variable look like "uint8_t :8;"
 					if var_name == "reserved":  
-						var_name = ":" + str(toBits(extra))
-					headfile.write(	"\t\t" + convertType(extra[0]) + " " + var_name + ";\n")  # TODO optional :len
+						var_name = ":" + str(toBits(a_var))
+					headfile.write(	"\t\t" + convertType(a_var[0]) + " " + var_name + ";\n")  # TODO optional :len
 				headfile.write( "\t} payload;\n" )
 
 				headfile.write( "public:\n")
-				headfile.write( "\t%s(%s);\n" % (className, makeParams(className) ) ) # TODO add params
+				headfile.write( "\t%s(%s);\n" % (className, makeParams(className) ) )
 				headfile.write( "\t%s(char *);\n" % className )
 
 				headfile.write( "\tMessageBuffer * makeBuffer();\n")
 				headfile.write( "\tvoid printEverything();\n" )
 			else:
 				headfile.write( "public:\n")
-				headfile.write( "\t%s();\n" % (className) ) # TODO add params
+				headfile.write( "\t%s();\n" % (className) )
 				headfile.write( "\t%s(char *);\n" % className )
 			# 
 
@@ -211,7 +218,15 @@ with open("Messages.h", "w") as headfile:
 				var_list = variables[className]
 				for a_var in var_list:
 					if a_var[1] != "reserved":
-						bodyfile.write("\tpayload.%s = _%s;\n" % (a_var[1], a_var[1]) )
+						if a_var[0] == "string":
+							end = a_var[1].find('[')
+							end2 = a_var[1].find(']')
+							var_name = a_var[1][0:end]
+							param_name = "_" + var_name
+							# size = int(a_var[1][end + 1:end2])
+							bodyfile.write("\tmemcpy(&payload.%s, %s.c_str(), %s.size());\n" % (var_name, param_name, param_name) )
+						else:
+							bodyfile.write("\tpayload.%s = _%s;\n" % (a_var[1], a_var[1]) )
 				bodyfile.write("}\n\n")
 				# deserialize
 				bodyfile.write("%s::%s(char * buf) : Header(buf) {\n" % (className, className) )

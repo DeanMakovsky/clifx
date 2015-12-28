@@ -3,6 +3,8 @@
 #ifndef MESS_AGES
 #define MESS_AGES
 
+#include <string>
+using namespace std;
 
 class MessageBuffer {
 public:
@@ -194,9 +196,10 @@ public:
 
 class SetLabel: public Header {
 	struct {
+		char   payload[32];
 	} payload;
 public:
-	SetLabel();
+	SetLabel(string);
 	SetLabel(char *);
 	MessageBuffer * makeBuffer();
 	void printEverything();
@@ -205,9 +208,10 @@ public:
 
 class StateLabel: public Header {
 	struct {
+		char   payload[32];
 	} payload;
 public:
-	StateLabel();
+	StateLabel(string);
 	StateLabel(char *);
 	MessageBuffer * makeBuffer();
 	void printEverything();
@@ -272,9 +276,12 @@ public:
 
 class StateLocation: public Header {
 	struct {
+		char   location[16];
+		char   label[32];
+		uint64_t updated_at;
 	} payload;
 public:
-	StateLocation();
+	StateLocation(string, string, uint64_t);
 	StateLocation(char *);
 	MessageBuffer * makeBuffer();
 	void printEverything();
@@ -290,9 +297,12 @@ public:
 
 class StateGroup: public Header {
 	struct {
+		char   location[16];
+		char   label[32];
+		uint64_t updated_at;
 	} payload;
 public:
-	StateGroup();
+	StateGroup(string, string, uint64_t);
 	StateGroup(char *);
 	MessageBuffer * makeBuffer();
 	void printEverything();
@@ -301,10 +311,10 @@ public:
 
 class EchoRequest: public Header {
 	struct {
-		char payload[64];
+		char   payload[64];
 	} payload;
 public:
-	EchoRequest(char);
+	EchoRequest(string);
 	EchoRequest(char *);
 	MessageBuffer * makeBuffer();
 	void printEverything();
@@ -313,10 +323,10 @@ public:
 
 class EchoResponse: public Header {
 	struct {
-		char payload[64];
+		char   payload[64];
 	} payload;
 public:
-	EchoResponse(char);
+	EchoResponse(string);
 	EchoResponse(char *);
 	MessageBuffer * makeBuffer();
 	void printEverything();
@@ -355,11 +365,11 @@ class State: public Header {
 		uint16_t kelvin;
 		short    :16;
 		uint16_t power;
-		char label[32];
+		char   label[32];
 		uint64_t :64;
 	} payload;
 public:
-	State(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, char);
+	State(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, string);
 	State(char *);
 	MessageBuffer * makeBuffer();
 	void printEverything();
