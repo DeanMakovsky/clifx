@@ -37,11 +37,20 @@ void Rectangle::print_me() {
 
 class Test {
 public:
-	int hello;
+	int val;
 	Test();
 };
 Test::Test() {
-	hello = 11;
+	val = 0;
+}
+
+class LargerTest : public Test {
+	char junkspace[100];
+public:
+	LargerTest();
+};
+LargerTest::LargerTest() {
+	val = 1;
 }
 
 
@@ -51,10 +60,17 @@ int main() {
 	// r.iceJJ.print_me();
 	// cout << "helo|" << endl;
 	// return 0;
-	Test t;
-	printf("%d\n", t.hello);
-	return 0;
+	Test * t = new Test();
+	printf("%lu\n", sizeof(*t));
 
-	cout << hex << "0x" << bitset<64>().to_ulong() << endl;  // TODO convert this to something usuable
+	t = new LargerTest();
+	printf("%lu\n", sizeof(*t));
+
+	if (t->val == 1) {
+		LargerTest * s = (LargerTest * ) t;
+		printf("%lu\n", sizeof(*s));
+	}
+
+	// cout << hex << "0x" << bitset<64>().to_ulong() << endl;  // TODO convert this to something usuable
 	return 0;
 }

@@ -18,6 +18,8 @@ using namespace std;
 
 Things to do:
 * implement more messages
+	* messages that have only text payloads have identical constructor as the deserialize
+	* setting payload content of strings 
 * return correct messages from deserialize()
 * target individual bulbs
 * check that the Get/Set/State power Light messages are the same content as the Device messages

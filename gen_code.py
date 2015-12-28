@@ -58,7 +58,8 @@ bits_to_name = {
 	16: 'uint16_t',
 	"16+":'short   ',
 	32: 'uint32_t',
-	64: 'uint64_t'
+	64: 'uint64_t',
+	"string": 'char  '
 }
 
 (16, 'hue'),(16, 'saturation'),(16, 'brightness'),(16, 'kelvin')
@@ -71,16 +72,16 @@ variables = {
 	'StateWifiFirmware' : [(64, 'build'), (64, 'reserved'), (32, 'version')],
 	'SetPower' : [(16, 'level')],
 	'StatePower' : [(16, 'level')],
-	'SetLabel' : [],  # TODO this and next are strings, 32 bytes
-	'StateLabel' : [],
+	'SetLabel' : [('string', 'payload[32]')],
+	'StateLabel' : [('string', 'payload[32]')],
 	'StateVersion' : [(32, 'vendor'), (32, 'product'), (32, 'version')],
 	'StateInfo' : [(64, 'time'), (64, 'uptime') , (64, 'downtime')],
-	'StateLocation' : [],  # TODO
-	'StateGroup' : [], 
-	'EchoRequest' : [('char', 'payload[64]')],
-	'EchoResponse' : [('char', 'payload[64]')],
+	'StateLocation' : [('string', 'location[16]'), ('string', 'label[32]'), (64, 'updated_at')],
+	'StateGroup' : [('string', 'location[16]'), ('string', 'label[32]'), (64, 'updated_at')], 
+	'EchoRequest' : [('string', 'payload[64]')],
+	'EchoResponse' : [('string', 'payload[64]')],
 	'SetColor' : [(8, 'reserved'), (16, 'hue'),(16, 'saturation'),(16, 'brightness'),(16, 'kelvin'), (32, 'duration')],
-	'State' : [(16, 'hue'),(16, 'saturation'),(16, 'brightness'),(16, 'kelvin'), ("16+", 'reserved'), (16, 'power'), ('char', 'label[32]'), (64, 'reserved')],
+	'State' : [(16, 'hue'),(16, 'saturation'),(16, 'brightness'),(16, 'kelvin'), ("16+", 'reserved'), (16, 'power'), ('string', 'label[32]'), (64, 'reserved')],
 	'SetPower_Light' : [(16, 'level'), (32, 'duration')],
 	'StatePower_Light' : [(16, 'level')]
 }
@@ -90,6 +91,30 @@ def convertType(thing):
 		return bits_to_name[thing]
 	return thing
 	
+def toBits(thing):
+	var_name = thing[1]
+	thing = thing[0]
+	if type(thing) is int:
+		return thing
+	elif type(thing) is str:
+		thing = thing.strip()
+		if thing == "float":
+			return 32
+		elif thing == "string":
+			start = var_name.find('[') + 1
+			end = var_name.find(']')
+			return 8*int(var_name[start:end])
+		# convert greedily to number
+		i = 0
+		while i < len(thing):
+			if not thing[i].isdigit():
+				break;
+			i += 1
+		if i != 0:
+			return int(thing[0:i])
+		
+	raise ValueError("Unknown number of bits: " + str(thing))
+
 def makeParams(className, insertUnderscoreNames=False):
 	"""To be used in header definition (False) and class implementation (True)"""
 	var_list = variables[className]
@@ -155,10 +180,7 @@ with open("Messages.h", "w") as headfile:
 					var_name = extra[1]
 					# if not used, then make the variable look like "uint8_t :8;"
 					if var_name == "reserved":  
-						var_name = extra[0]
-						if var_name == "16+":
-							var_name = 16
-						var_name = ":" + str(var_name)
+						var_name = ":" + str(toBits(extra))
 					headfile.write(	"\t\t" + convertType(extra[0]) + " " + var_name + ";\n")  # TODO optional :len
 				headfile.write( "\t} payload;\n" )
 
