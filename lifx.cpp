@@ -18,7 +18,6 @@ using namespace std;
 /*
 
 Things to do:
-* target individual bulbs (REMEMBER to modify Header class)
 * check that the Get/Set/State power Light messages are the same content as the Device messages
 
 Considerations:
@@ -84,7 +83,7 @@ void handleMessage(Header * h) {
 
 	if (type == 3) {
 		StateService * actual = (StateService *) h;
-		h->printEverything();
+		// h->printEverything();
 		unsigned int service = actual->payload.service;
 		int port = actual->payload.port;
 		string target((char *) &(actual->head.target), 6);
@@ -112,7 +111,7 @@ void handleMessage(Header * h) {
 			printf("Bulb did not give MAC address\n");
 			return;
 		}
-		
+
 		// update known bulbs
 		all_bulbs[target] = time(0);
 		printMap(&all_bulbs);
@@ -152,8 +151,9 @@ int main(int argc, char ** argv) {
 			if (thing->getType() != 0) {
 				messagesRead += 1;
 				printf("Messages Read: %d\n", messagesRead);
-				printf("Type: %d\n", thing->getType());
+				// printf("Type: %d\n", thing->getType());
 				handleMessage(thing);
+				// thing->printEverything();
 			} else {
 				delete thing;
 				break;
@@ -171,6 +171,16 @@ int main(int argc, char ** argv) {
 		// prune known light bulbs
 		if (iterations % 20 == 2) {
 			pruneMap(&all_bulbs);
+		}
+
+		// individual random colors
+		for (map<string, time_t>::iterator it = all_bulbs.begin(); it != all_bulbs.end(); it++) {
+			SetColor c(randy(0,65535),65535,4*4096,randy(2500,9000),10);
+			c.setTarget(it->first);
+			MessageBuffer * b = c.makeBuffer();
+			sock.send(b->buf, b->size);
+			printf("Sent color.\n");
+			delete b;
 		}
 
 		// printf("->Start to sleep.\n");

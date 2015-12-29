@@ -103,20 +103,9 @@ int Header::getType() {
 	return head.type;
 }
 
-void setTarget(string) {
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-	// TODODOTDDSFODFDSFSDF
-
+void Header::setTarget(string tar) {
+	head.tagged = 0;
+	memcpy(head.target, tar.c_str(), 6);
 }
 
 /**
@@ -159,7 +148,7 @@ Header * Header::deserialize(int sockfd) {
 	char ip_buffer[100];
 	memset(ip_buffer, 0, sizeof(ip_buffer));
 	inet_ntop(AF_INET, &sender.sin_addr.s_addr, ip_buffer, sizeof(ip_buffer));
-	//printf("Sending address: %s:%hu\n", ip_buffer, ntohs(sender.sin_port));
+	printf("Sending address: %s:%hu\n", ip_buffer, ntohs(sender.sin_port));
 
 
 	// validate the input some
