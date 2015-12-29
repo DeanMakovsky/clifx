@@ -16,7 +16,7 @@ public:
 #pragma pack(push, 1)
 
 class Header {
-protected:
+public:
 	struct {
 		/* frame */
 		uint16_t size;
@@ -43,6 +43,7 @@ public:
 	Header(char *);
 	virtual ~Header();
 	int getType();
+	void setTarget(string);
 	static Header * deserialize(int);
 	virtual MessageBuffer * makeBuffer();
 	virtual void printEverything();

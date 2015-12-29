@@ -87,8 +87,6 @@ Header::Header() {
 	// h.target = 0; // for all MACs
 	head.sequence = 0;
 
-	head.type = 2; // TODO this is only sometimes correct
-
 }
 
 /**
@@ -103,6 +101,22 @@ Header::~Header() {
 
 int Header::getType() {
 	return head.type;
+}
+
+void setTarget(string) {
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+	// TODODOTDDSFODFDSFSDF
+
 }
 
 /**
@@ -127,7 +141,7 @@ Header * Header::deserialize(int sockfd) {
 	if (ret == -1) {
 		int val = errno;
 		if (val == EAGAIN || val == EWOULDBLOCK) {
-			printf("No data to read.\n");
+			// printf("No data to read.\n");
 			Header  * h = new Header();
 			h->head.type = 0;
 			return h;
@@ -145,11 +159,10 @@ Header * Header::deserialize(int sockfd) {
 	char ip_buffer[100];
 	memset(ip_buffer, 0, sizeof(ip_buffer));
 	inet_ntop(AF_INET, &sender.sin_addr.s_addr, ip_buffer, sizeof(ip_buffer));
-	printf("Sending address: %s:%hu\n", ip_buffer, ntohs(sender.sin_port));
+	//printf("Sending address: %s:%hu\n", ip_buffer, ntohs(sender.sin_port));
 
 
 	// validate the input some
-	printf("Read -%d- bytes.\n", ret);
 	if (ret > sizeof(buffer)) {
 		printf("Read too many bytes for buffer, truncating message.\n");
 		ret = sizeof(buffer);
@@ -213,84 +226,3 @@ void Header::printEverything() {
 	cout << fcol << "reserved" << tab << "2 bytes" << endl;
 }
 
-/*
-
-
-Color::Color(unsigned int _hue, unsigned int _sat, unsigned int _bright, unsigned int _kelvin, unsigned int _duration) : Header() {
-	// cout << "Color size (this): " << sizeof(*this) << endl;
-	// cout << "Color size (Header): " << sizeof(Header) << endl;
-	// cout << "Color size (Color): " << sizeof(Color) << endl;
-	head.size = sizeof(head) + sizeof(payload);
-
-	// zero out payload
-	memset(&payload, 0, sizeof(payload));
-	payload.hue = _hue;
-	payload.saturation = _sat;
-	payload.brightness = _bright;
-	payload.kelvin = _kelvin;
-	payload.duration = _duration;
-
-	head.type = 102; // color message
-
-}
-
-MessageBuffer * Color::makeBuffer() {
-	char buf[ sizeof(head) + sizeof(payload)];
-	int size = sizeof(head) + sizeof(payload);
-	memcpy(buf, &head, sizeof(head));
-	memcpy(buf + sizeof(head), &payload, sizeof(payload));
-	MessageBuffer * mb = new MessageBuffer(buf, size);
-	return mb;
-}
-
-void Color::printEverything() {
-	Header::printEverything();
-	cout << "~~~~~ Protocol Header ~~~~~" << endl;
-	cout << fcol << "reserved" << tab << "1 byte" << endl;
-	cout << fcol << "hue" << tab << payload.hue << endl;
-	cout << fcol << "saturation" << tab << payload.saturation << endl;
-	cout << fcol << "brightness" << tab << payload.brightness << endl;
-	cout << fcol << "kelvin" << tab << payload.kelvin << endl;
-	cout << fcol << "duration" << tab << payload.duration << endl;
-}
-
-
-// ~~~model for generating code:
-
-
-GetWifiInfo::GetWifiInfo() {
-	head.type = 123123;
-}
-
-GetWifiInfo::GetWifiInfo(char * buf) : Header(buf) {
-}
-
-
-
-StateWifiInfo::StateWifiInfo(float _a,uint32_t _b,uint32_t _c) {
-	head.type = 234213432;
-	payload.a = _a;
-	payload.b = _b;
-	payloda.c = _c;
-}
-
-StateWifiInfo::StateWifiInfo(char * buf) : Header(buf) {
-	memcpy(&payload, buf + sizeof(head), sizeof(payload));
-}
-
-MessageBuffer * StateWifiInfo::makeBuffer() {
-	char buf[ sizeof(head) + sizeof(payload)];
-	int size = sizeof(head) + sizeof(payload);
-	memcpy(buf, &head, sizeof(head));
-	memcpy(buf + sizeof(head), &payload, sizeof(payload));
-	MessageBuffer * mb = new MessageBuffer(buf, size);
-	return mb;
-}
-
-void StateWifiInfo::printEverything() {
-	Header::printEverything();
-	cout << "~~~~~ Payload ~~~~~" << endl;
-	cout << fcol << "reserved" << tab << "1 byte" << endl;
-	// ...
-}
-*/

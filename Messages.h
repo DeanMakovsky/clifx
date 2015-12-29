@@ -18,7 +18,7 @@ public:
 #pragma pack(push, 1)
 
 class Header {
-protected:
+public:
 	struct {
 		/* frame */
 		uint16_t size;
@@ -45,13 +45,14 @@ public:
 	Header(char *);
 	virtual ~Header();
 	int getType();
+	void setTarget(string);
 	static Header * deserialize(int);
 	virtual MessageBuffer * makeBuffer();
 	virtual void printEverything();
 };
 
 // ~~~ Subclasses ~~~
-class GetService: public Header {
+struct GetService: public Header {
 public:
 	GetService();
 	GetService(char *);
@@ -60,7 +61,7 @@ public:
 GetService * GetServiceFac(char *);
 
 
-class StateService: public Header {
+struct StateService: public Header {
 	struct {
 		uint8_t  service;
 		uint32_t port;
@@ -75,7 +76,7 @@ public:
 StateService * StateServiceFac(char *);
 
 
-class GetHostInfo: public Header {
+struct GetHostInfo: public Header {
 public:
 	GetHostInfo();
 	GetHostInfo(char *);
@@ -84,7 +85,7 @@ public:
 GetHostInfo * GetHostInfoFac(char *);
 
 
-class StateHostInfo: public Header {
+struct StateHostInfo: public Header {
 	struct {
 		float    signal;
 		uint32_t tx;
@@ -101,7 +102,7 @@ public:
 StateHostInfo * StateHostInfoFac(char *);
 
 
-class GetHostFirmware: public Header {
+struct GetHostFirmware: public Header {
 public:
 	GetHostFirmware();
 	GetHostFirmware(char *);
@@ -110,7 +111,7 @@ public:
 GetHostFirmware * GetHostFirmwareFac(char *);
 
 
-class StateHostFirmware: public Header {
+struct StateHostFirmware: public Header {
 	struct {
 		uint64_t build;
 		uint64_t :64;
@@ -126,7 +127,7 @@ public:
 StateHostFirmware * StateHostFirmwareFac(char *);
 
 
-class GetWifiInfo: public Header {
+struct GetWifiInfo: public Header {
 public:
 	GetWifiInfo();
 	GetWifiInfo(char *);
@@ -135,7 +136,7 @@ public:
 GetWifiInfo * GetWifiInfoFac(char *);
 
 
-class StateWifiInfo: public Header {
+struct StateWifiInfo: public Header {
 	struct {
 		float    signal;
 		uint32_t tx;
@@ -152,7 +153,7 @@ public:
 StateWifiInfo * StateWifiInfoFac(char *);
 
 
-class GetWifiFirmware: public Header {
+struct GetWifiFirmware: public Header {
 public:
 	GetWifiFirmware();
 	GetWifiFirmware(char *);
@@ -161,7 +162,7 @@ public:
 GetWifiFirmware * GetWifiFirmwareFac(char *);
 
 
-class StateWifiFirmware: public Header {
+struct StateWifiFirmware: public Header {
 	struct {
 		uint64_t build;
 		uint64_t :64;
@@ -177,7 +178,7 @@ public:
 StateWifiFirmware * StateWifiFirmwareFac(char *);
 
 
-class GetPower: public Header {
+struct GetPower: public Header {
 public:
 	GetPower();
 	GetPower(char *);
@@ -186,7 +187,7 @@ public:
 GetPower * GetPowerFac(char *);
 
 
-class SetPower: public Header {
+struct SetPower: public Header {
 	struct {
 		uint16_t level;
 	} payload;
@@ -200,7 +201,7 @@ public:
 SetPower * SetPowerFac(char *);
 
 
-class StatePower: public Header {
+struct StatePower: public Header {
 	struct {
 		uint16_t level;
 	} payload;
@@ -214,7 +215,7 @@ public:
 StatePower * StatePowerFac(char *);
 
 
-class GetLabel: public Header {
+struct GetLabel: public Header {
 public:
 	GetLabel();
 	GetLabel(char *);
@@ -223,7 +224,7 @@ public:
 GetLabel * GetLabelFac(char *);
 
 
-class SetLabel: public Header {
+struct SetLabel: public Header {
 	struct {
 		char   payload[32];
 	} payload;
@@ -237,7 +238,7 @@ public:
 SetLabel * SetLabelFac(char *);
 
 
-class StateLabel: public Header {
+struct StateLabel: public Header {
 	struct {
 		char   payload[32];
 	} payload;
@@ -251,7 +252,7 @@ public:
 StateLabel * StateLabelFac(char *);
 
 
-class GetVersion: public Header {
+struct GetVersion: public Header {
 public:
 	GetVersion();
 	GetVersion(char *);
@@ -260,7 +261,7 @@ public:
 GetVersion * GetVersionFac(char *);
 
 
-class StateVersion: public Header {
+struct StateVersion: public Header {
 	struct {
 		uint32_t vendor;
 		uint32_t product;
@@ -276,7 +277,7 @@ public:
 StateVersion * StateVersionFac(char *);
 
 
-class GetInfo: public Header {
+struct GetInfo: public Header {
 public:
 	GetInfo();
 	GetInfo(char *);
@@ -285,7 +286,7 @@ public:
 GetInfo * GetInfoFac(char *);
 
 
-class StateInfo: public Header {
+struct StateInfo: public Header {
 	struct {
 		uint64_t time;
 		uint64_t uptime;
@@ -301,7 +302,7 @@ public:
 StateInfo * StateInfoFac(char *);
 
 
-class Acknowledgement: public Header {
+struct Acknowledgement: public Header {
 public:
 	Acknowledgement();
 	Acknowledgement(char *);
@@ -310,7 +311,7 @@ public:
 Acknowledgement * AcknowledgementFac(char *);
 
 
-class GetLocation: public Header {
+struct GetLocation: public Header {
 public:
 	GetLocation();
 	GetLocation(char *);
@@ -319,7 +320,7 @@ public:
 GetLocation * GetLocationFac(char *);
 
 
-class StateLocation: public Header {
+struct StateLocation: public Header {
 	struct {
 		char   location[16];
 		char   label[32];
@@ -335,7 +336,7 @@ public:
 StateLocation * StateLocationFac(char *);
 
 
-class GetGroup: public Header {
+struct GetGroup: public Header {
 public:
 	GetGroup();
 	GetGroup(char *);
@@ -344,7 +345,7 @@ public:
 GetGroup * GetGroupFac(char *);
 
 
-class StateGroup: public Header {
+struct StateGroup: public Header {
 	struct {
 		char   location[16];
 		char   label[32];
@@ -360,7 +361,7 @@ public:
 StateGroup * StateGroupFac(char *);
 
 
-class EchoRequest: public Header {
+struct EchoRequest: public Header {
 	struct {
 		char   payload[64];
 	} payload;
@@ -374,7 +375,7 @@ public:
 EchoRequest * EchoRequestFac(char *);
 
 
-class EchoResponse: public Header {
+struct EchoResponse: public Header {
 	struct {
 		char   payload[64];
 	} payload;
@@ -388,7 +389,7 @@ public:
 EchoResponse * EchoResponseFac(char *);
 
 
-class Get: public Header {
+struct Get: public Header {
 public:
 	Get();
 	Get(char *);
@@ -397,7 +398,7 @@ public:
 Get * GetFac(char *);
 
 
-class SetColor: public Header {
+struct SetColor: public Header {
 	struct {
 		uint8_t  :8;
 		uint16_t hue;
@@ -416,7 +417,7 @@ public:
 SetColor * SetColorFac(char *);
 
 
-class State: public Header {
+struct State: public Header {
 	struct {
 		uint16_t hue;
 		uint16_t saturation;
@@ -437,7 +438,7 @@ public:
 State * StateFac(char *);
 
 
-class GetPower_Light: public Header {
+struct GetPower_Light: public Header {
 public:
 	GetPower_Light();
 	GetPower_Light(char *);
@@ -446,7 +447,7 @@ public:
 GetPower_Light * GetPower_LightFac(char *);
 
 
-class SetPower_Light: public Header {
+struct SetPower_Light: public Header {
 	struct {
 		uint16_t level;
 		uint32_t duration;
@@ -461,7 +462,7 @@ public:
 SetPower_Light * SetPower_LightFac(char *);
 
 
-class StatePower_Light: public Header {
+struct StatePower_Light: public Header {
 	struct {
 		uint16_t level;
 	} payload;

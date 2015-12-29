@@ -188,7 +188,7 @@ with open("Messages.h", "w") as headfile:
 		for message_spec in messages:
 			# first do header (.h) file
 			className = message_spec[0]
-			headfile.write("class %s: public Header {\n" % className)
+			headfile.write("struct %s: public Header {\n" % className)
 			if message_spec[1]:  # has payload
 				headfile.write( "\tstruct {\n" )
 				for a_var in variables[className]:
