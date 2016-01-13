@@ -116,9 +116,9 @@ void handleMessage(Header * h) {
 		all_bulbs[target] = time(0);
 		printMap(&all_bulbs);
 		// actual->printEverything();
-	} else {
+	} else if (type == 25) {
 		// printf("Other message: %d\n", type);
-		// h->printEverything();
+		h->printEverything();
 	}
 }
 
@@ -164,26 +164,32 @@ int main(int argc, char ** argv) {
 		// discover stuff every 10s
 		if (iterations % 10 == 0) {
 			GetService g;
-			MessageBuffer b = *g.makeBuffer();
-			sock.send(b.buf, b.size);
+			MessageBuffer * b = g.makeBuffer();
+			sock.send(b->buf, b->size);
+
+			GetLabel l;
+			b = l.makeBuffer();
+			sock.send(b->buf, b->size);
+
 		}
 
 		// prune known light bulbs
-		if (iterations % 20 == 2) {
+		if (iterations % 30 == 2) {
 			pruneMap(&all_bulbs);
 		}
-
-		// individual random colors
-		for (map<string, time_t>::iterator it = all_bulbs.begin(); it != all_bulbs.end(); it++) {
-			SetColor c(randy(0,65535),65535,4*4096,randy(2500,9000),10);
-			c.setTarget(it->first);
-			MessageBuffer * b = c.makeBuffer();
-			sock.send(b->buf, b->size);
-			printf("Sent color.\n");
-			delete b;
+/*
+		if (iterations % 5 == 3) {
+			// individual random colors
+			for (map<string, time_t>::iterator it = all_bulbs.begin(); it != all_bulbs.end(); it++) {
+				SetColor c(randy(0,65535),65535,4*4096,randy(2500,9000),3000);
+				c.setTarget(it->first);
+				MessageBuffer * b = c.makeBuffer();
+				sock.send(b->buf, b->size);
+				printf("Sent color.\n");
+				delete b;
+			}
 		}
-
-		// printf("->Start to sleep.\n");
+*/		// printf("->Start to sleep.\n");
 		this_thread::sleep_for (chrono::seconds(1));
 		iterations += 1;
 		if (iterations >= 60) { // a highly divisible number

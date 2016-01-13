@@ -255,7 +255,14 @@ with open("Messages.h", "w") as headfile:
 				bodyfile.write('\tcout << "~~~~~~ Payload ~~~~~~" << endl;\n')
 				for a_var in var_list:
 					if a_var[1] != "reserved":
-						bodyfile.write("\tcout << fcol << \"%s\" << tab << payload.%s << endl;\n" % (a_var[1], a_var[1]) )
+						if a_var[0] == "string":
+							end = a_var[1].find('[')
+							end2 = a_var[1].find(']')
+							var_name = a_var[1][0:end]
+							var_size = int(a_var[1][end+1 : end2])
+							bodyfile.write("\tcout << fcol << \"%s\" << tab << string(payload.%s, %d) << endl;\n" % (a_var[1], var_name, var_size) )
+						else:
+							bodyfile.write("\tcout << fcol << \"%s\" << tab << payload.%s << endl;\n" % (a_var[1], a_var[1]) )
 					else:
 						bodyfile.write("\tcout << fcol << \"%s\" << tab << \"%s bits\" << endl;\n" % (a_var[1], str(a_var[0])) )
 				bodyfile.write("}\n\n")

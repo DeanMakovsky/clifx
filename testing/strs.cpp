@@ -29,6 +29,8 @@ void work(char buf[]) {
 	cout << "uf" << buf << endl;
 }
 int main() {
-	work(string("asf"));
+	// work(string("asf"));
+	char buf[] = "hel\x00looo";
+	cout << string(buf,6) << endl;
 	return 0;
 }

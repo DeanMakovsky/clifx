@@ -559,7 +559,7 @@ MessageBuffer * SetLabel::makeBuffer() {
 void SetLabel::printEverything() {
 	Header::printEverything();
 	cout << "~~~~~~ Payload ~~~~~~" << endl;
-	cout << fcol << "payload[32]" << tab << payload.payload[32] << endl;
+	cout << fcol << "payload[32]" << tab << string(payload.payload, 32) << endl;
 }
 
 SetLabel * SetLabelFac(char * buf){
@@ -590,7 +590,7 @@ MessageBuffer * StateLabel::makeBuffer() {
 void StateLabel::printEverything() {
 	Header::printEverything();
 	cout << "~~~~~~ Payload ~~~~~~" << endl;
-	cout << fcol << "payload[32]" << tab << payload.payload[32] << endl;
+	cout << fcol << "payload[32]" << tab << string(payload.payload, 32) << endl;
 }
 
 StateLabel * StateLabelFac(char * buf){
@@ -741,8 +741,8 @@ MessageBuffer * StateLocation::makeBuffer() {
 void StateLocation::printEverything() {
 	Header::printEverything();
 	cout << "~~~~~~ Payload ~~~~~~" << endl;
-	cout << fcol << "location[16]" << tab << payload.location[16] << endl;
-	cout << fcol << "label[32]" << tab << payload.label[32] << endl;
+	cout << fcol << "location[16]" << tab << string(payload.location, 16) << endl;
+	cout << fcol << "label[32]" << tab << string(payload.label, 32) << endl;
 	cout << fcol << "updated_at" << tab << payload.updated_at << endl;
 }
 
@@ -788,8 +788,8 @@ MessageBuffer * StateGroup::makeBuffer() {
 void StateGroup::printEverything() {
 	Header::printEverything();
 	cout << "~~~~~~ Payload ~~~~~~" << endl;
-	cout << fcol << "location[16]" << tab << payload.location[16] << endl;
-	cout << fcol << "label[32]" << tab << payload.label[32] << endl;
+	cout << fcol << "location[16]" << tab << string(payload.location, 16) << endl;
+	cout << fcol << "label[32]" << tab << string(payload.label, 32) << endl;
 	cout << fcol << "updated_at" << tab << payload.updated_at << endl;
 }
 
@@ -821,7 +821,7 @@ MessageBuffer * EchoRequest::makeBuffer() {
 void EchoRequest::printEverything() {
 	Header::printEverything();
 	cout << "~~~~~~ Payload ~~~~~~" << endl;
-	cout << fcol << "payload[64]" << tab << payload.payload[64] << endl;
+	cout << fcol << "payload[64]" << tab << string(payload.payload, 64) << endl;
 }
 
 EchoRequest * EchoRequestFac(char * buf){
@@ -852,7 +852,7 @@ MessageBuffer * EchoResponse::makeBuffer() {
 void EchoResponse::printEverything() {
 	Header::printEverything();
 	cout << "~~~~~~ Payload ~~~~~~" << endl;
-	cout << fcol << "payload[64]" << tab << payload.payload[64] << endl;
+	cout << fcol << "payload[64]" << tab << string(payload.payload, 64) << endl;
 }
 
 EchoResponse * EchoResponseFac(char * buf){
@@ -946,7 +946,7 @@ void State::printEverything() {
 	cout << fcol << "kelvin" << tab << payload.kelvin << endl;
 	cout << fcol << "reserved" << tab << "16+ bits" << endl;
 	cout << fcol << "power" << tab << payload.power << endl;
-	cout << fcol << "label[32]" << tab << payload.label[32] << endl;
+	cout << fcol << "label[32]" << tab << string(payload.label, 32) << endl;
 	cout << fcol << "reserved" << tab << "64 bits" << endl;
 }
 
