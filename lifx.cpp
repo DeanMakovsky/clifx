@@ -28,6 +28,7 @@ Considerations:
 */
 
 map<string, time_t> all_bulbs;
+map<string, time_t> ignore_list;
 
 void checkBlocking(int sockfd) {
 	if(fcntl(sockfd, F_GETFL) & O_NONBLOCK) {
@@ -77,6 +78,14 @@ void pruneMap(map<string, time_t> * m) {
 		}
 	}
 }
+bool checkIgnore(map<string, time_t> * m, string s ) {
+	for( map<string, time_t>::iterator it = m->begin(); it != m->end(); ++it) {
+		if (it->first == s) {
+			return true;
+		}
+	}
+	return false;
+}
 void handleMessage(Header * h) {
 	
 	int type = h->getType();
@@ -84,7 +93,7 @@ void handleMessage(Header * h) {
 	if (type == 3) {
 		StateService * actual = (StateService *) h;
 		// h->printEverything();
-		unsigned int service = actual->payload.service;
+		// unsigned int service = actual->payload.service;
 		int port = actual->payload.port;
 		string target((char *) &(actual->head.target), 6);
 
@@ -125,6 +134,9 @@ void handleMessage(Header * h) {
 
 
 int main(int argc, char ** argv) {
+	ignore_list[string("\xd0\x73\xd5\x11\xdf\xe7")] = 0;  // d0:73:d5 is a common prefix / 0 is a placeholder value
+	ignore_list[string("\xd0\x73\xd5\x10\x72\x58")] = 0;  // d0:73:d5 is a common prefix / 0 is a placeholder value
+	ignore_list[string("\xd0\x73\xd5\x10\x73\x82")] = 0;  // d0:73:d5 is a common prefix / 0 is a placeholder value
 
 	// test string equality
 	// char temp[7];
@@ -142,6 +154,16 @@ int main(int argc, char ** argv) {
 	MySocket sock;
 	int messagesRead = 0;
 	int iterations = 0;
+	// for ( int nums = 0; nums < 3; nums++ ) {
+	// 	SetColor c(randy(0,65535),65535,4*4096,randy(2500,9000),10);
+	// 	c.setTarget("\xd0\x73\xd5\x11\xdf\xe7");
+	// 	MessageBuffer * b = c.makeBuffer();
+	// 	sock.send(b->buf, b->size);
+	// 	delete b;
+	// 	this_thread::sleep_for (chrono::seconds(1));
+	// }
+
+	// return 0;
 
 	while (true) {
 
@@ -177,11 +199,14 @@ int main(int argc, char ** argv) {
 		if (iterations % 30 == 2) {
 			pruneMap(&all_bulbs);
 		}
-/*
+
 		if (iterations % 5 == 3) {
 			// individual random colors
 			for (map<string, time_t>::iterator it = all_bulbs.begin(); it != all_bulbs.end(); it++) {
-				SetColor c(randy(0,65535),65535,4*4096,randy(2500,9000),3000);
+				if (checkIgnore(&ignore_list, it->first)) {
+					continue;
+				}
+				SetColor c(randy(0,65535),65535,5*4096,randy(2500,9000),3000);
 				c.setTarget(it->first);
 				MessageBuffer * b = c.makeBuffer();
 				sock.send(b->buf, b->size);
@@ -189,7 +214,7 @@ int main(int argc, char ** argv) {
 				delete b;
 			}
 		}
-*/		// printf("->Start to sleep.\n");
+		// printf("->Start to sleep.\n");
 		this_thread::sleep_for (chrono::seconds(1));
 		iterations += 1;
 		if (iterations >= 60) { // a highly divisible number
@@ -201,13 +226,13 @@ int main(int argc, char ** argv) {
 
 
 	// make random colors!
-	for ( ;; ) {
-		SetColor c(randy(0,65535),65535,4*4096,randy(2500,9000),10);
-		MessageBuffer * b = c.makeBuffer();
-		sock.send(b->buf, b->size);
-		delete b;
-		this_thread::sleep_for (chrono::seconds(1));
-	}
+	// for ( ;; ) {
+	// 	SetColor c(randy(0,65535),65535,4*4096,randy(2500,9000),10);
+	// 	MessageBuffer * b = c.makeBuffer();
+	// 	sock.send(b->buf, b->size);
+	// 	delete b;
+	// 	this_thread::sleep_for (chrono::seconds(1));
+	// }
 
-	return 0;
+	// return 0;
 }
